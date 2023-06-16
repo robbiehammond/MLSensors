@@ -5,11 +5,6 @@ static const int LHRING = 1;
 static const int LHMIDDLE = 2;
 static const int LHINDEX = 3;
 static const int LHTHUMB = 4;
-static const int RHPINKY = 5;
-static const int RHRING = 6;
-static const int RHMIDDLE = 7;
-static const int RHINDEX = 8;
-static const int RHTHUMB = 9;
 
 static const int iAx = 0;
 static const int iAy = 1;

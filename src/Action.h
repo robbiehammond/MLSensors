@@ -13,6 +13,7 @@ public:
     void writeOut(WriteOption w);
 
 private:
+    const int threshold = 1;
     std::array<SensorSample, SAMPLES_PER_ACTION> lastSamples;
 };
 

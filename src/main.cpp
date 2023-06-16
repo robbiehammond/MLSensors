@@ -3,7 +3,7 @@
 #include "Action.h"
 
 int16_t rawVals[6]; //where raw data is read to
-std::array<MPU6050, NUM_SENSORS> sensors; //sensors[0] = LH pinky, sensors[1] = LH ring, etc
+std::array<MPU6050, NUM_SENSORS> sensors;
 SensorSample curSample; //written to over and over again for a copy to get pushed into samples.
 std::queue<SensorSample> capturedSamples; //queue containing the last SAMPLES_PER_ACTION samples.
 
@@ -27,6 +27,8 @@ void recordSensorData() {
     capturedSamples.push(curSample);
     curSample.resetSample();
 }
+
+
 
 void setup() {
 }

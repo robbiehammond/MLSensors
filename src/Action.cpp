@@ -1,7 +1,10 @@
 #include "Action.h"
 
-Action::Action(std::array<AccelData, SAMPLES_PER_ACTION> lastSamples) {
-    this->lastSamples = lastSamples;
+Action::Action(std::queue<SensorSample>& capturedSamples) {
+    for (int i = 0; i < SAMPLES_PER_ACTION; i++) {
+        lastSamples[i] = capturedSamples.front();
+        capturedSamples.pop();
+    }
 }
 
 /*
@@ -15,6 +18,9 @@ bool Action::likelyContainsButtonPress() {
 void Action::writeOut(WriteOption w) {
     switch (w) {
         case SERIAL_OUT:
+            std::for_each(std::begin(lastSamples), std::end(lastSamples), [](SensorSample& sample){
+                Serial.println(sample.to_string().c_str());
+            });
             //print data in a readable AND parsable format
             break;
         case BLUETOOTH:

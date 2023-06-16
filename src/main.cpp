@@ -2,47 +2,46 @@
 #include <queue>
 #include "Action.h"
 
-MPU6050 accelgyro;
-int16_t rawVals[6];
-const int iAx = 0;
-const int iAy = 1;
-const int iAz = 2;
-const int iGx = 3;
-const int iGy = 4;
-const int iGz = 5;
-std::queue<AccelData> q;
-std::array<AccelData, SAMPLES_PER_ACTION> ar; 
+int16_t rawVals[6]; //where raw data is read to
+std::array<MPU6050, NUM_SENSORS> sensors; //sensors[0] = LH pinky, sensors[1] = LH ring, etc
+SensorSample curSample; //written to over and over again for a copy to get pushed into samples.
+std::queue<SensorSample> capturedSamples; //queue containing the last SAMPLES_PER_ACTION samples.
 
 
+//read current sensor data, compile it into a SensorSample
+void updateSensorData() {
+    int sensorNum = 0;
+    for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
+        auto& sensor = sensors[sensorNum];
+        sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
+                          &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
+        curSample.set(sensorNum, rawVals);
+        
+        sensorNum++;
+    };
+}
+
+//write out timestamp and push it into queue
+void recordSensorData() {
+    curSample.finalizeSample();
+    capturedSamples.push(curSample);
+    curSample.resetSample();
+}
 
 void setup() {
-    accelgyro.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
-                             &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
 }
 
 
 void loop() {
-    accelgyro.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
-                             &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
+    updateSensorData();
 
-    AccelData a = {
-        rawVals[iAx],
-        rawVals[iAy], 
-        rawVals[iAz],
-        rawVals[iGx],
-        rawVals[iGy], 
-        rawVals[iGz]
-    };
+    recordSensorData();
 
-    q.push(a);
+    if (capturedSamples.size() == SAMPLES_PER_ACTION) {
 
-    if (q.size() == SAMPLES_PER_ACTION) {
-        for (int i = 0; i < SAMPLES_PER_ACTION; i++) {
-            ar[i] = q.front();
-            q.pop();
-        }
+        //NOTE: This clears the capturedSamples queue too.
+        Action action(capturedSamples);
 
-        Action action(ar);
         if (action.likelyContainsButtonPress())
             action.writeOut(WriteOption::SERIAL_OUT);
     }

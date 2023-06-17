@@ -8,12 +8,11 @@
 //A series of samples that can be used to determine if a keypress happened within these samples.
 class Action {
 public:
-    Action(std::queue<SensorSample>& capturedSamples);
+    Action(std::array<SensorSample, SAMPLES_PER_ACTION>& capturedSamples);
     bool likelyContainsButtonPress();
     void writeOut(WriteOption w);
 
 private:
-    const int threshold = 1;
     std::array<SensorSample, SAMPLES_PER_ACTION> lastSamples;
 };
 

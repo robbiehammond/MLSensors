@@ -22,7 +22,6 @@
         }
 
     NN can have SAMPLES_PER_ACTION * NUM_SENSORS fields
-
 '''
 import json, serial
 

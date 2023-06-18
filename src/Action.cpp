@@ -29,12 +29,11 @@ void Action::writeOut(WriteOption w) {
                 int time = sample.getTimeStamp();
 
                 sampleData["time"] = time;
-                JsonObject sampleJson = sampleData.createNestedObject("data");
 
                 //for each sensor, create json object within timestamp , add fields
                 for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
                     std::string key = "sensor" + std::to_string(sensorNum);
-                    JsonObject sensorData = sampleJson.createNestedObject(key);
+                    JsonObject sensorData = sampleData.createNestedObject(key);
                     sensorData["ax"] = (int)sample.get(sensorNum).ax;
                     sensorData["ay"] = (int)sample.get(sensorNum).ay;
                     sensorData["az"] = (int)sample.get(sensorNum).az;

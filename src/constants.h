@@ -17,5 +17,5 @@ static const int THRESHOLD = 1;
 
 const static int SAMPLES_PER_ACTION = 10;
 const static int MAX_RECORDED_SAMPLES = 1000;
-const static int NUM_SENSORS = 1; //1 for each finger
+const static int NUM_SENSORS = 3; //1 for each finger
 #endif

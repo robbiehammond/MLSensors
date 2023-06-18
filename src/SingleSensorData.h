@@ -1,6 +1,7 @@
 #ifndef SINGLESENSORDATA_H 
 #define SINGLESENSORDATA_H
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 struct SingleSensorData {
     int sensorNum;

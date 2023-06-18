@@ -6,7 +6,7 @@
 #include "constants.h"
 
 //1 Sensor Sample = (data from sensor0, data from sensor1, data from sensorN) all at a specific point in time.
-class SensorSample {
+class SensorState {
 public:
     void set(int sensorNum, int16_t* rawData) {
         if (!readyToBeWrittenTo) {
@@ -50,6 +50,12 @@ public:
         s += "\n";
         return s;
     }
+
+    long int getTimeStamp() {
+        return timeWhenTaken;
+    }
+
+    
 
 private:
     bool readyToBeWrittenTo = true;

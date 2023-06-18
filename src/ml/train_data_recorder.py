@@ -33,11 +33,12 @@ cnt = 0
 while (True):
     line = ser.readline()
     # We might start reading halfway through an object, just wait a bit to skip those.
-    if (cnt > 10):
-        data = json.loads(line)
-        jsonObjs.append(data)
-        print(data['sample0'])
+    data = json.loads(line)
+    jsonObjs.append(data)
+    print(data['sample0'])
     cnt += 1
+    if cnt == 50:
+        print("CHANGE!")
     if cnt > 100:
         break
 
@@ -55,15 +56,14 @@ with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
         'sample6sensor0ax', 'sample6sensor0ay', 'sample6sensor0az', 'sample6sensor0gx', 'sample6sensor0gy', 'sample6sensor0gz', 
         'sample7sensor0ax', 'sample7sensor0ay', 'sample7sensor0az', 'sample7sensor0gx', 'sample7sensor0gy', 'sample7sensor0gz', 
         'sample8sensor0ax', 'sample8sensor0ay', 'sample8sensor0az', 'sample8sensor0gx', 'sample8sensor0gy', 'sample8sensor0gz', 
-        'sample9sensor0ax', 'sample9sensor0ay', 'sample9sensor0az', 'sample9sensor0gx', 'sample9sensor0gy', 'sample9sensor0gz'
+        'sample9sensor0ax', 'sample9sensor0ay', 'sample9sensor0az', 'sample9sensor0gx', 'sample9sensor0gy', 'sample9sensor0gz',
         'key'
     ]
     writer.writerow(fields)
+    cnt = 0
     for obj in jsonObjs:
         r = 1
-        if random.random() < .9:
-            r = 1
-        else:
+        if cnt > 50:
             r = 2
         writer.writerow([
             obj['sample0']['sensor0']['ax'], obj['sample0']['sensor0']['ay'], obj['sample0']['sensor0']['az'], obj['sample0']['sensor0']['gx'], obj['sample0']['sensor0']['gy'], obj['sample0']['sensor0']['gz'], 
@@ -78,3 +78,4 @@ with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
             obj['sample9']['sensor0']['ax'], obj['sample9']['sensor0']['ay'], obj['sample9']['sensor0']['az'], obj['sample9']['sensor0']['gx'], obj['sample9']['sensor0']['gy'], obj['sample9']['sensor0']['gz'],
             r
         ])
+        cnt += 1

@@ -48,6 +48,12 @@ model.compile(
     ]
 )
 
+print(dummy_y)
 history = model.fit(X_train_scaled, dummy_y, epochs=200)
 predictions = model.predict(X_test_scaled)
-print(predictions)
+for i in range(len(y_test)):
+    if (predictions[i][0] > predictions[i][1]):
+        print("predicted 1")
+    else:
+        print("predicted 2")
+print(y_test)

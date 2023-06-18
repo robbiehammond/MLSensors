@@ -7,6 +7,7 @@ int16_t rawVals[6]; //where raw data is read to
 std::array<MPU6050, NUM_SENSORS> sensors;
 SensorState curState; //written to over and over again for a copy to get pushed into samples.
 std::array<SensorState, MAX_RECORDED_SAMPLES> capturedStates;
+Action curAction;
 int sampleInd = 0;
 
 
@@ -14,18 +15,24 @@ int sampleInd = 0;
 void updateSensorData() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
         auto& sensor = sensors[sensorNum];
+
+        //temporary for testing
+        for (int i = 0; i < 6; i++) {
+            rawVals[i] = sensorNum;
+        }
+        /*
         sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
                           &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
-
+        */
         curState.set(sensorNum, rawVals);
     };
 }
 
 //Give it it's timestamp of when it was taken, and put it into the capturedSamples list.
 void recordSensorData() {
-    curState.finalizeSample();
+    curState.markAsCompleted();
     capturedStates[sampleInd] = curState;
-    curState.resetSample();
+    curState.resetState();
 }
 
 
@@ -45,6 +52,12 @@ bool possiblePress() {
     return false;
 }
 
+void checkSampleRate() {
+    long int t1 = millis();
+    sensors[0].getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
+                        &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
+    Serial.println(millis() - t1);
+}
 
 void setup() {
     #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -60,12 +73,6 @@ void setup() {
     }
 }
 
-void checkSampleRate() {
-    long int t1 = millis();
-    sensors[0].getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
-                        &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
-    Serial.println(millis() - t1);
-}
 
 void loop() {
     if (TEST) {
@@ -83,14 +90,14 @@ void loop() {
         //TODO: This is a bug to fix: If sampleInd is at the beginning and we have an action, it won't be registered.
         //This is because we just look backwards in the sample list to get the last few samples.
         if (sampleInd >= SAMPLES_PER_ACTION) {
+
             std::array<SensorState, SAMPLES_PER_ACTION> statesToUse;
             for (int i = 0; i < SAMPLES_PER_ACTION; i++) {
                 //just so that samplesToUse[0] is oldest, samplesToUse[1] is next oldest, etc
                 statesToUse[SAMPLES_PER_ACTION - 1 - i] = capturedStates[sampleInd - i];
             }
-
-            Action action(statesToUse);
-            action.writeOut(WriteOption::SERIAL_OUT);
+            curAction.setStates(statesToUse);
+            curAction.writeOut(WriteOption::SERIAL_OUT);
 
         }
     }

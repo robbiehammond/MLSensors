@@ -1,26 +1,40 @@
 #include "Action.h"
 
-Action::Action(std::array<SensorState, SAMPLES_PER_ACTION>& capturedSamples) {
+Action::Action() {
+}
+
+void Action::setStates(std::array<SensorState, SAMPLES_PER_ACTION>& capturedSamples) {
     lastSamples = capturedSamples;
 }
 
+// This will (theoretically) called on every button press action.
+// It is somewhat slow to send the data out, meaning that 
+// there will likely be some delay (like .25 sec) before data is collected again
+// for the next press to be registered.
+// The faster this can go, the faster you can rapid-fire press
 void Action::writeOut(WriteOption w) {
     switch (w) {
 
         //print data in a readable AND parsable format
         case SERIAL_OUT: {
-            //Create mega json object to hold all the samples
-            JsonObject megaObject = buf.createNestedObject();
+            DynamicJsonDocument doc(7500); //to format json and all that 
 
             //for each state, create jsonObject within big one.
             for (int sampleInd = 0; sampleInd < SAMPLES_PER_ACTION; sampleInd++) {
-                auto& sample = lastSamples[sampleInd];
-                megaObject["time"] = sample.getTimeStamp();
+                //create json object for this sample
+                std::string stateKey = "sample" + std::to_string(sampleInd);
+                JsonObject sampleData = doc.createNestedObject(stateKey);
 
-                //for each sensor, create json object within state object, add fields
+                auto& sample = lastSamples[sampleInd];
+                int time = sample.getTimeStamp();
+
+                sampleData["time"] = time;
+                JsonObject sampleJson = sampleData.createNestedObject("data");
+
+                //for each sensor, create json object within timestamp , add fields
                 for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
                     std::string key = "sensor" + std::to_string(sensorNum);
-                    JsonObject sensorData = megaObject.createNestedObject(key);
+                    JsonObject sensorData = sampleJson.createNestedObject(key);
                     sensorData["ax"] = (int)sample.get(sensorNum).ax;
                     sensorData["ay"] = (int)sample.get(sensorNum).ay;
                     sensorData["az"] = (int)sample.get(sensorNum).az;
@@ -29,7 +43,8 @@ void Action::writeOut(WriteOption w) {
                     sensorData["gz"] = (int)sample.get(sensorNum).gz;
                 }
             }
-            serializeJson(megaObject, Serial);
+            serializeJson(doc, Serial);
+            Serial.println();
             break;
         }
 

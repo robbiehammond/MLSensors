@@ -10,7 +10,7 @@ class SensorState {
 public:
     void set(int sensorNum, int16_t* rawData) {
         if (!readyToBeWrittenTo) {
-            Serial.println("WRITING TO UNFINIALIZED SAMPLE");
+            Serial.println("WRITING TO FINIALIZED SAMPLE");
         }
 
         data[sensorNum] = (SingleSensorData) {
@@ -28,12 +28,12 @@ public:
         return data[sensorNum];
     }
 
-    void finalizeSample() {
+    void markAsCompleted() {
         timeWhenTaken = millis();
         readyToBeWrittenTo = false;
     }
 
-    void resetSample() {
+    void resetState() {
         readyToBeWrittenTo = true;
     }
 

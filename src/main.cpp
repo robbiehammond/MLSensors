@@ -9,6 +9,7 @@ SensorState curState; //written to over and over again for a copy to get pushed 
 std::array<SensorState, MAX_RECORDED_SAMPLES> capturedStates;
 Action curAction;
 int sampleInd = 0;
+bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 
 
 
 //read current sensor data, compile it into the SensorSample. After this is called, the curSample has the most up-to-date data.
@@ -16,10 +17,11 @@ void updateSensorData() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
         auto& sensor = sensors[sensorNum];
 
-        //temporary for testing
+        //temporary for testing and simulation. Delete everything up to sensor.getMotion6();
         for (int i = 0; i < 6; i++) {
             rawVals[i] = sensorNum;
         }
+        delay(1);
         /*
         sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
                           &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
@@ -33,6 +35,7 @@ void recordSensorData() {
     curState.markAsCompleted();
     capturedStates[sampleInd] = curState;
     curState.resetState();
+    sampleInd = (sampleInd + 1) % MAX_RECORDED_SAMPLES;
 }
 
 
@@ -67,16 +70,15 @@ void setup() {
         Fastwire::setup(400, true);
     #endif
 
-    Serial.println("HERERE!!!");
-
     for (auto& sensor : sensors) {
         sensor.initialize();
     }
-    Serial.println("HERERE!!!");
 }
 
 
 void loop() {
+    if (sampleInd > 10) enoughSamplesCollected = true;
+
     if (TEST) {
         checkSampleRate();
         return;
@@ -87,23 +89,16 @@ void loop() {
 
     recordSensorData();
 
-    if (possiblePress()) {
+    if (enoughSamplesCollected && possiblePress()) {
 
-        //TODO: This is a bug to fix: If sampleInd is at the beginning and we have an action, it won't be registered.
-        //This is because we just look backwards in the sample list to get the last few samples.
-        if (sampleInd >= SAMPLES_PER_ACTION) {
-
-            std::array<SensorState, SAMPLES_PER_ACTION> statesToUse;
-            for (int i = 0; i < SAMPLES_PER_ACTION; i++) {
-                //just so that samplesToUse[0] is oldest, samplesToUse[1] is next oldest, etc
-                statesToUse[SAMPLES_PER_ACTION - 1 - i] = capturedStates[sampleInd - i];
-            }
-            curAction.setStates(statesToUse);
-            curAction.writeOut(WriteOption::SERIAL_OUT);
-
+        std::array<SensorState, SAMPLES_PER_ACTION> statesToUse;
+        for (int i = 0; i < SAMPLES_PER_ACTION; i++) {
+            int loopingSampleInd = sampleInd - i < 0 ? MAX_RECORDED_SAMPLES - i : sampleInd;
+            //just so that samplesToUse[0] is oldest, samplesToUse[1] is next oldest, etc
+            statesToUse[SAMPLES_PER_ACTION - 1 - i] = capturedStates[loopingSampleInd - i];
         }
+        curAction.setStates(statesToUse);
+        curAction.writeOut(WriteOption::SERIAL_OUT);
+
     }
-
-
-    sampleInd = (sampleInd + 1) % MAX_RECORDED_SAMPLES;
 }

@@ -60,17 +60,19 @@ void checkSampleRate() {
 }
 
 void setup() {
+    Serial.begin(922190);
     #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
         Wire.begin();
     #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
         Fastwire::setup(400, true);
     #endif
 
-    Serial.begin(9600);
+    Serial.println("HERERE!!!");
 
     for (auto& sensor : sensors) {
         sensor.initialize();
     }
+    Serial.println("HERERE!!!");
 }
 
 

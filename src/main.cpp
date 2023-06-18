@@ -10,6 +10,7 @@ std::array<SensorState, MAX_RECORDED_SAMPLES> capturedStates;
 Action curAction;
 int sampleInd = 0;
 bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 
+int maxAy = 0;
 
 
 //read current sensor data, compile it into the SensorSample. After this is called, the curSample has the most up-to-date data.
@@ -17,15 +18,12 @@ void updateSensorData() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
         auto& sensor = sensors[sensorNum];
 
-        //temporary for testing and simulation. Delete everything up to sensor.getMotion6();
-        for (int i = 0; i < 6; i++) {
-            rawVals[i] = sensorNum;
-        }
-        delay(1);
-        /*
         sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
                           &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
-        */
+        if (rawVals[iAy] > maxAy) { 
+            maxAy = rawVals[iAy];
+            Serial.println(maxAy);
+        }
         curState.set(sensorNum, rawVals);
     };
 }
@@ -47,8 +45,11 @@ Probably could just be done immediately in updateSensorData() so we don't need t
 */
 bool possiblePress() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
+        int16_t curXAcc = curState.get(sensorNum).ax;
         int16_t curYAcc = curState.get(sensorNum).ay;
-        if (curYAcc >= -1 * THRESHOLD) {
+        int16_t curZAcc = curState.get(sensorNum).az;
+        // not just y! You can tilt the device and stuff too!
+        if (curXAcc >= THRESHOLD || curYAcc >= THRESHOLD || curZAcc >= THRESHOLD) {
             return true;
         }
     }
@@ -72,6 +73,9 @@ void setup() {
 
     for (auto& sensor : sensors) {
         sensor.initialize();
+        Serial.println(sensor.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
+        sensor.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);
+
     }
 }
 
@@ -99,6 +103,5 @@ void loop() {
         }
         curAction.setStates(statesToUse);
         curAction.writeOut(WriteOption::SERIAL_OUT);
-
     }
 }

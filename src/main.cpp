@@ -20,14 +20,14 @@ int sampleInd = 0;
 
 //read current sensor data, compile it into the SensorSample. After this is called, the curSample has the most up-to-date data.
 void updateSensorData() {
-    int sensorNum = 0;
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
         auto& sensor = sensors[sensorNum];
+        long int t1 = millis();
         sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
                           &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
+        Serial.println(millis() - t1);
+
         curSample.set(sensorNum, rawVals);
-        
-        sensorNum++;
     };
 }
 
@@ -38,10 +38,6 @@ void recordSensorData() {
     curSample.resetSample();
 }
 
-
-
-void setup() {
-}
 
 /*
 Loop through all the sensors and check their most recently recorded y acceleration. If it abruptly changes 
@@ -58,6 +54,21 @@ bool possiblePress() {
     }
     return false;
 }
+
+void setup() {
+    #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+        Wire.begin();
+    #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+        Fastwire::setup(400, true);
+    #endif
+
+    Serial.begin(9600);
+
+    for (auto& sensor : sensors) {
+        sensor.initialize();
+    }
+}
+
 
 
 void loop() {

@@ -23,7 +23,7 @@
 
     NN can have SAMPLES_PER_ACTION * NUM_SENSORS fields
 '''
-import json, serial, csv
+import json, serial, csv, random
 
 ser = serial.Serial('/dev/tty.usbserial-02896C6F')
 ser.baudrate = 922190
@@ -43,7 +43,7 @@ while (True):
 
 with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    # for 10 samples, 2 sensors at the moment
+    # for 10 samples, 2 sensors at the moment. 12 pieces of data per sample, 10 samples
     # Some of the most cursed code I've ever written
     fields = [
         'sample0sensor0ax', 'sample0sensor0ay', 'sample0sensor0az', 'sample0sensor0gx', 'sample0sensor0gy', 'sample0sensor0gz', 'sample0sensor1ax', 'sample0sensor1ay', 'sample0sensor1az', 'sample0sensor1gx', 'sample0sensor1gy', 'sample0sensor1gz', 
@@ -55,10 +55,16 @@ with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
         'sample6sensor0ax', 'sample6sensor0ay', 'sample6sensor0az', 'sample6sensor0gx', 'sample6sensor0gy', 'sample6sensor0gz', 'sample6sensor1ax', 'sample6sensor1ay', 'sample6sensor1az', 'sample6sensor1gx', 'sample6sensor1gy', 'sample6sensor1gz', 
         'sample7sensor0ax', 'sample7sensor0ay', 'sample7sensor0az', 'sample7sensor0gx', 'sample7sensor0gy', 'sample7sensor0gz', 'sample7sensor1ax', 'sample7sensor1ay', 'sample7sensor1az', 'sample7sensor1gx', 'sample7sensor1gy', 'sample7sensor1gz', 
         'sample8sensor0ax', 'sample8sensor0ay', 'sample8sensor0az', 'sample8sensor0gx', 'sample8sensor0gy', 'sample8sensor0gz', 'sample8sensor1ax', 'sample8sensor1ay', 'sample8sensor1az', 'sample8sensor1gx', 'sample8sensor1gy', 'sample8sensor1gz', 
-        'sample9sensor0ax', 'sample9sensor0ay', 'sample9sensor0az', 'sample9sensor0gx', 'sample9sensor0gy', 'sample9sensor0gz', 'sample9sensor1ax', 'sample9sensor1ay', 'sample9sensor1az', 'sample9sensor1gx', 'sample9sensor1gy', 'sample9sensor1gz'
+        'sample9sensor0ax', 'sample9sensor0ay', 'sample9sensor0az', 'sample9sensor0gx', 'sample9sensor0gy', 'sample9sensor0gz', 'sample9sensor1ax', 'sample9sensor1ay', 'sample9sensor1az', 'sample9sensor1gx', 'sample9sensor1gy', 'sample9sensor1gz',
+        'key'
     ]
     writer.writerow(fields)
     for obj in jsonObjs:
+        r = 1
+        if random.random() < .9:
+            r = 1
+        else:
+            r = 2
         writer.writerow([
             obj['sample0']['sensor0']['ax'], obj['sample0']['sensor0']['ay'], obj['sample0']['sensor0']['az'], obj['sample0']['sensor0']['gx'], obj['sample0']['sensor0']['gy'], obj['sample0']['sensor0']['gz'], 
             obj['sample0']['sensor1']['ax'], obj['sample0']['sensor1']['ay'], obj['sample0']['sensor1']['az'], obj['sample0']['sensor1']['gx'], obj['sample0']['sensor1']['gy'], obj['sample0']['sensor1']['gz'], 
@@ -79,5 +85,6 @@ with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
             obj['sample8']['sensor0']['ax'], obj['sample8']['sensor0']['ay'], obj['sample8']['sensor0']['az'], obj['sample8']['sensor0']['gx'], obj['sample8']['sensor0']['gy'], obj['sample8']['sensor0']['gz'], 
             obj['sample8']['sensor1']['ax'], obj['sample8']['sensor1']['ay'], obj['sample8']['sensor1']['az'], obj['sample8']['sensor1']['gx'], obj['sample8']['sensor1']['gy'], obj['sample8']['sensor1']['gz'], 
             obj['sample9']['sensor0']['ax'], obj['sample9']['sensor0']['ay'], obj['sample9']['sensor0']['az'], obj['sample9']['sensor0']['gx'], obj['sample9']['sensor0']['gy'], obj['sample9']['sensor0']['gz'], 
-            obj['sample9']['sensor1']['ax'], obj['sample9']['sensor1']['ay'], obj['sample9']['sensor1']['az'], obj['sample9']['sensor1']['gx'], obj['sample9']['sensor1']['gy'], obj['sample9']['sensor1']['gz']
+            obj['sample9']['sensor1']['ax'], obj['sample9']['sensor1']['ay'], obj['sample9']['sensor1']['az'], obj['sample9']['sensor1']['gx'], obj['sample9']['sensor1']['gy'], obj['sample9']['sensor1']['gz'],
+            r
         ])

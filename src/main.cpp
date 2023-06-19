@@ -1,8 +1,12 @@
 #include <MPU6050.h>
 #include <queue>
 #include "Action.h"
-bool TEST = false; //to check sensor sampling rate
+/*
+    Goals for tomorrow:
+        - Experiment around with making it such that model can predict which of 4 sides is being hit (should be easy)
+        - Clean up both C++ and Python code, make it super maintainable
 
+*/
 MPU6050 sensor; //sensor that is currently being looked at
 int16_t rawVals[6]; //where raw data is read to
 SensorState curState; //written to over and over again for a copy to get pushed into samples.
@@ -102,9 +106,12 @@ void setup() {
 
     Serial.begin(922190);
     pinMode(SENSOR0PIN, OUTPUT);
+    pinMode(SENSOR1PIN, OUTPUT);
+    pinMode(SENSOR2PIN, OUTPUT);
+    pinMode(SENSOR3PIN, OUTPUT);
     Wire.begin();
 
-    sensor = MPU6050(0x68);
+    //sensor = MPU6050(0x68);
 
     sensor.initialize();
     for (int i = 0; i < NUM_SENSORS; i++) {

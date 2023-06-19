@@ -5,3 +5,5 @@
 .vscode/ipch
 test_model/
 *.tflite
+.vscode/
+src/ml/__pycache__/

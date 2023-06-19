@@ -1,11 +1,11 @@
-from sklearn.discriminant_analysis import StandardScaler
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
-import pandas as pd 
 from keras.models import load_model
 import serial, json
 import numpy as np
 from constants import * 
+from pynput.keyboard import Key, Controller
+
+keyboard = Controller()
+
 
 def predict(model, data):
     nnInput = []
@@ -19,7 +19,11 @@ def predict(model, data):
             nnInput.append(data['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz'])
     df = pd.DataFrame(data=[nnInput], columns=fields)
     t = scaler.transform(df)
-    print(np.argmax(model.predict(t)))
+    if ONLYPRINT:
+        print(np.argmax(model.predict(t)))
+    else:
+        keyboard.press(str(np.argmax(model.predict(t))))
+
 
 def main():
     model = load_model('src/ml/models/model.h5')

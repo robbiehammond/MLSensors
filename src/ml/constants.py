@@ -4,10 +4,11 @@ from sklearn.model_selection import train_test_split
 
 BAUD_RATE = 922190
 DEVICE_LOCATION = '/dev/tty.usbserial-02896C6F'
-NUM_POSSIBILITIES = 3
+NUM_POSSIBILITIES = 2
 NUM_SENSORS = 2
 NUM_SAMPLES = 10
 NUM_KEYSTROKES_TO_TRAIN = 100
+ONLYPRINT = False 
 
 
 scaler = StandardScaler()

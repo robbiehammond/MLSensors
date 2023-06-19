@@ -8,6 +8,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+NUM_POSSIBILITIES = 4
+
+def printTestResults(y_test, predictions):
+    ar = [d for d in y_test]
+    print(type(y_test))
+    for i in range(len(y_test)):
+        print("Predicted " + str(np.argmax(predictions[i])), end=', ')
+        print("Actually was " + str(ar[i] - 1))
+
 
 df = pd.read_csv('src/ml/csvs/mpu6050data.csv')
 X = df.drop('key', axis=1)
@@ -33,7 +42,7 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(256, activation='relu'),
     tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(2, activation='sigmoid')
+    tf.keras.layers.Dense(NUM_POSSIBILITIES, activation='sigmoid')
 ])
 model.compile(
     loss='categorical_crossentropy',
@@ -45,9 +54,6 @@ model.compile(
 
 history = model.fit(X_train_scaled, dummy_y, epochs=200)
 predictions = model.predict(X_test_scaled)
-for i in range(len(y_test)):
-    if (predictions[i][0] > predictions[i][1]):
-        print("predicted 1")
-    else:
-        print("predicted 2")
-print(y_test)
+
+printTestResults(y_test, predictions)
+

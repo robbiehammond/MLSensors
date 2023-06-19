@@ -8,7 +8,7 @@ def getTrainingData(ser, text):
     i = 0
     while (i < len(text)):
         key = text[i]
-        print("Do an action corresponding to this character: " + key)
+        print("Do the action corresponding to this character: " + key)
         line = ser.readline()
         strokes_made += 1
 
@@ -24,9 +24,6 @@ def getTrainingData(ser, text):
 
 def write_to_csv(jsonObjs):
     with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
-        #change these when more sensors are in use
-        NUM_SENSORS = 2
-        NUM_SAMPLES = 10
         writer = csv.writer(csvfile)
 
         fields = []

@@ -16,7 +16,7 @@ static const int iGz = 5;
 static const int THRESHOLD = 5000;
 
 const static int SAMPLES_PER_ACTION = 10;
-const static int NUM_SENSORS = 2; //current number plugged in
+const static int NUM_SENSORS = 3; //current number plugged in
 const static int DOC_SIZE = 6000;
 
 const static int SENSOR0PIN = 26;

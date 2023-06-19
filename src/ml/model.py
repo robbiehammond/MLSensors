@@ -19,7 +19,7 @@ X = df.drop('key', axis=1)
 y = df['key']
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, 
-    test_size=0.2, random_state=42
+    test_size=0.2, random_state=2
 )
 
 encoder = LabelEncoder()
@@ -33,7 +33,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 
-tf.random.set_seed(42)
+tf.random.set_seed(2)
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(256, activation='relu'),
@@ -48,7 +48,6 @@ model.compile(
     ]
 )
 
-print(dummy_y)
 history = model.fit(X_train_scaled, dummy_y, epochs=200)
 predictions = model.predict(X_test_scaled)
 for i in range(len(y_test)):

@@ -11,6 +11,7 @@ public:
     void set(int sensorNum, int16_t* rawData) {
         if (!readyToBeWrittenTo) {
             Serial.println("WRITING TO FINIALIZED SAMPLE");
+            return;
         }
 
         data[sensorNum] = (SingleSensorData) {
@@ -26,15 +27,6 @@ public:
 
     SingleSensorData get(int sensorNum) {
         return data[sensorNum];
-    }
-
-    void markAsCompleted() {
-        timeWhenTaken = millis();
-        readyToBeWrittenTo = false;
-    }
-
-    void resetState() {
-        readyToBeWrittenTo = true;
     }
 
     std::string to_string() {
@@ -55,7 +47,14 @@ public:
         return timeWhenTaken;
     }
 
-    
+    void markAsCompleted() {
+        timeWhenTaken = millis();
+        readyToBeWrittenTo = false;
+    }
+
+    void resetState() {
+        readyToBeWrittenTo = true;
+    }
 
 private:
     bool readyToBeWrittenTo = true;

@@ -16,8 +16,11 @@ static const int iGz = 5;
 static const int THRESHOLD = 5000;
 
 const static int SAMPLES_PER_ACTION = 10;
-const static int MAX_RECORDED_SAMPLES = 1000;
-const static int NUM_SENSORS = 2; //1 for each finger
+const static int NUM_SENSORS = 2; //current number plugged in
 const static int DOC_SIZE = 6000;
 
+const static int SENSOR0PIN = 26;
+const static int SENSOR1PIN = 25;
+const static int SENSOR2PIN = 13;
+const static int SENSOR3PIN = 12;
 #endif

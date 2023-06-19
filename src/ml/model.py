@@ -8,11 +8,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-import itertools
-
-SAMPLES_PER_ACTION = 10
-NUM_SENSORS = 2 
-DATA_PER_SENSOR = 6 #ax, ay, az, gx, gy, gz
 
 df = pd.read_csv('src/ml/csvs/mpu6050data.csv')
 X = df.drop('key', axis=1)

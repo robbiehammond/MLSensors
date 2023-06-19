@@ -12,23 +12,44 @@ int sampleInd = 0; //loops through capturedSamples updating them every loop
 bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 
 int maxAy = 0; //for threshold tuning
 
+//TODO: Move these to constants.h
+const static int SENSOR0PIN = A0;
+const static int SENSOR1PIN = A1;
+const static int SENSOR2PIN = GPIO_NUM_13;
+const static int SENSOR3PIN = GPIO_NUM_12;
+
 //Sensor reads will come from the input sensor number.
 //HIGH = address is now 0x69, low means it's 0x68.
-//Device we want will be on 0x68
+//Device we want will be on 0x68.
 void changeSensor(int sensor) {
     switch (sensor) {
         case 0:
-            digitalWrite(A0, LOW);
-            digitalWrite(A1, HIGH);
+            digitalWrite(SENSOR0PIN, LOW);
+            digitalWrite(SENSOR1PIN, HIGH);
+            digitalWrite(SENSOR2PIN, HIGH);
+            digitalWrite(SENSOR3PIN, HIGH);
             break;
         case 1:
-            digitalWrite(A0, HIGH);
-            digitalWrite(A1, LOW);
+            digitalWrite(SENSOR0PIN, HIGH);
+            digitalWrite(SENSOR1PIN, LOW);
+            digitalWrite(SENSOR2PIN, HIGH);
+            digitalWrite(SENSOR3PIN, HIGH);
+            break;
+        case 2:
+            digitalWrite(SENSOR0PIN, HIGH);
+            digitalWrite(SENSOR1PIN, HIGH);
+            digitalWrite(SENSOR2PIN, LOW);
+            digitalWrite(SENSOR3PIN, HIGH);
+            break;
+        case 3:
+            digitalWrite(SENSOR0PIN, HIGH);
+            digitalWrite(SENSOR1PIN, HIGH);
+            digitalWrite(SENSOR2PIN, HIGH);
+            digitalWrite(SENSOR3PIN, LOW);
             break;
         default:
             Serial.println("Invalid pin passed.");
             Serial.println(sensor);
-
     }
 }
 

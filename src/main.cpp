@@ -1,18 +1,11 @@
 #include <MPU6050.h>
 #include <queue>
 #include "Action.h"
-/*
-    Goals for tomorrow:
-        - Experiment around with making it such that model can predict which of 4 sides is being hit (should be easy)
-        - Clean up both C++ and Python code, make it super maintainable
-        - Write dynamic data collection framework (propmted to do action, acknowledge that action happened, say what it should be) to automatically build training data.
-        - Start writing main.py, which will listen for inputs on Serial, convert them to NN input, and pass into pretrained model. Result determines keypress.
-*/
 
-MPU6050 sensor; //sensor that is currently being looked at
-int16_t rawVals[6]; //where raw data is read to
-SensorState curState; //written to over and over again for a copy to get pushed into samples.
-std::array<SensorState, SAMPLES_PER_ACTION> capturedStates; //After button press, the last few states are sent over. The last 1000 are stored here.
+MPU6050 sensor; //The sensor that is currently being looked at
+int16_t rawVals[6]; //Where raw data is read to
+SensorState curState; //Written to over and over again for a copy to get pushed into samples.
+std::array<SensorState, SAMPLES_PER_ACTION> capturedStates; //After button press, these are the previous (and current) states that get sent over.
 Action curAction; //When a button press happens, it's stored here.
 int sampleInd = 0; //loops through capturedSamples updating them every loop
 bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 

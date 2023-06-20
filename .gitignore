@@ -7,3 +7,5 @@ test_model/
 *.tflite
 .vscode/
 src/ml/__pycache__/
+src/ml/models/
+src/ml/csvs/

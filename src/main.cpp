@@ -2,6 +2,13 @@
 #include <queue>
 #include "Action.h"
 
+/*
+    For tomorrow:
+        - Plug in last sensor onto breadboard, test that out
+        - Start writing video script
+        - Start looking into how to make ring design in Fusion360
+*/
+
 MPU6050 sensor; //The sensor that is currently being looked at
 int16_t rawVals[6]; //Where raw data is read to
 SensorState curState; //Written to over and over again for a copy to get pushed into samples.

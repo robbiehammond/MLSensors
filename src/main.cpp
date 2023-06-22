@@ -103,6 +103,7 @@ void setup() {
     pinMode(SENSOR1PIN, OUTPUT);
     pinMode(SENSOR2PIN, OUTPUT);
     pinMode(SENSOR3PIN, OUTPUT);
+    pinMode(ACTIVEPIN, INPUT);
     Wire.begin();
 
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
@@ -123,6 +124,9 @@ it takes about 50-52 ms.
 */
 void loop() {
     //long int t1 = millis();
+
+    if (digitalRead(ACTIVEPIN) == LOW) return; //don't collect samples if inactive.
+
     if (!enoughSamplesCollected && sampleInd == (SAMPLES_PER_ACTION - 1)) enoughSamplesCollected = true;
 
     updateSensorData();
@@ -135,5 +139,4 @@ void loop() {
         curAction.writeOut(WriteOption::SERIAL_OUT);
     }
     sampleInd = (sampleInd + 1) % SAMPLES_PER_ACTION;
-    //Serial.println(millis() - t1);
 }

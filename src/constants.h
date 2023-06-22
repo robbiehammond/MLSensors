@@ -13,7 +13,7 @@ static const int iGx = 3;
 static const int iGy = 4;
 static const int iGz = 5;
 
-static const int THRESHOLD = 5000;
+static const int THRESHOLD = 6000;
 
 const static int SAMPLES_PER_ACTION = 10;
 const static int NUM_SENSORS = 4; //current number plugged in

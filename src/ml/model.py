@@ -14,10 +14,15 @@ from constants import *
 
 def printTestResults(y_test, predictions):
     ar = [d for d in y_test]
+    right = 0
     print(type(y_test))
     for i in range(len(y_test)):
-        print("Predicted " + str(np.argmax(predictions[i])), end=', ')
-        print("Actually was " + str(ar[i] - 1))
+        print("Predicted " + str(np.argmax(predictions[i]) + 1), end=', ')
+        print("Actually was " + str(ar[i]))
+        if (str(np.argmax(predictions[i]) + 1) == str(ar[i])):
+            right += 1
+    print("Test set accuracy: " + str(right / len(predictions)))
+
 
 
 tf.random.set_seed(2)
@@ -47,7 +52,7 @@ model.compile(
     ]
 )
 
-history = model.fit(X_train_scaled, dummy_y, epochs=200)
+history = model.fit(X_train_scaled, dummy_y, epochs=100)
 predictions = model.predict(X_test_scaled)
 
 printTestResults(y_test, predictions)

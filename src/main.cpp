@@ -2,13 +2,6 @@
 #include <queue>
 #include "Action.h"
 
-/*
-    For tomorrow:
-        - Plug in last sensor onto breadboard, test that out
-        - Start writing video script
-        - Start looking into how to make ring design in Fusion360
-*/
-
 MPU6050 sensor; //The sensor that is currently being looked at
 int16_t rawVals[6]; //Where raw data is read to
 SensorState curState; //Written to over and over again for a copy to get pushed into samples.
@@ -103,7 +96,6 @@ void setup() {
     pinMode(SENSOR1PIN, OUTPUT);
     pinMode(SENSOR2PIN, OUTPUT);
     pinMode(SENSOR3PIN, OUTPUT);
-    pinMode(ACTIVEPIN, INPUT);
     Wire.begin();
 
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
@@ -123,16 +115,13 @@ For 4 sensors, normally executes in 6-7 ms, but when it's time to print,
 it takes about 50-52 ms.
 */
 void loop() {
-    //long int t1 = millis();
-
-    if (digitalRead(ACTIVEPIN) == LOW) return; //don't collect samples if inactive.
-
     if (!enoughSamplesCollected && sampleInd == (SAMPLES_PER_ACTION - 1)) enoughSamplesCollected = true;
 
     updateSensorData();
 
     recordSensorData();
 
+    //if we're actively sending messages, collected enough samples, and a press is detected
     if (enoughSamplesCollected && possiblePress()) {
 
         curAction.setStates(capturedStates);

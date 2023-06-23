@@ -23,5 +23,4 @@ const static int SENSOR0PIN = 26;
 const static int SENSOR1PIN = 25;
 const static int SENSOR2PIN = 13;
 const static int SENSOR3PIN = 12;
-const static int ACTIVEPIN= 34;
 #endif

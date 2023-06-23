@@ -7,7 +7,7 @@ def getTrainingData(ser, text):
     strokes_made = 0
     i = 0
     while (i < len(text)):
-        key = text[i]
+        key = text[strokes_made]
         print("Do the action corresponding to this character: " + key)
         line = ser.readline()
         strokes_made += 1
@@ -18,7 +18,10 @@ def getTrainingData(ser, text):
 
         print('Actions Performed: ' + str(strokes_made))
         print()
-        i += 1
+        if (strokes_made > 0) and (strokes_made % 50 == 0):
+            ser.close()
+            inp = input("Press any key when ready to continue")
+            ser.open()
     return jsonObjs
 
 

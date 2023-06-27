@@ -10,7 +10,7 @@ NUM_SAMPLES = 10
 NUM_KEYSTROKES_TO_TRAIN = 100
 ONLYPRINT = False 
 
-
+'''
 scaler = StandardScaler()
 df = pd.read_csv('src/ml/csvs/mpu6050data.csv')
 X = df.drop('key', axis=1)
@@ -20,6 +20,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     test_size=0.2, random_state=2
 )
 scaler.fit_transform(X_test)
+'''
 
 
 fields = []

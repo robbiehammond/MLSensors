@@ -1,5 +1,8 @@
-import json, serial, csv, random, os
+import json, serial, csv, random, os, warnings
+from termcolor import colored
 from constants import * 
+warnings.simplefilter('always', UserWarning)
+
 
 def getTrainingDataLineByLine(ser, text):
     strokes_made = 0
@@ -27,20 +30,36 @@ def write_entry_to_csv(obj):
     with open('src/ml/csvs/mpu6050data.csv', 'a') as csvfile:
         writer = csv.writer(csvfile)
         rowToWrite = []
+        goodData = True
         for sampleNum in range(NUM_SAMPLES):
             for sensorNum in range(NUM_SENSORS):
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['ax'])
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['ay'])
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['az'])
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gx'])
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gy'])
-                rowToWrite.append(obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz'])
-        rowToWrite.append(obj['key'])
-        writer.writerow(rowToWrite)
+                ax = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['ax']
+                ay = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['ay']
+                az = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['az']
+                gx = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gx']
+                gy = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gy']
+                gz = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz']
+                #if the sensor is likely not reading, give a warning
+                if ax == 0 and ay == 0 and az == 0 and gx == 0 and gy == 0 and gz == 0:
+                    goodData = False
+                else:
+                    rowToWrite.append(ax)
+                    rowToWrite.append(ay)
+                    rowToWrite.append(az)
+                    rowToWrite.append(gx)
+                    rowToWrite.append(gy)
+                    rowToWrite.append(gz)
+
+
+        if goodData:
+            rowToWrite.append(obj['key'])
+            writer.writerow(rowToWrite)
+        else:
+            warnings.warn(colored(f'Sensor {sensorNum} likely isn\'t responding. Data won\'t be recorded', 'red'))
 
 
 def write_columns_to_csv():
-    with open('src/ml/csvs/mpu6050data.csv', 'w', newline='') as csvfile:
+    with open('src/ml/csvs/mpu6050data.csv', 'w+', newline='') as csvfile:
         writer = csv.writer(csvfile)
 
         fields = []

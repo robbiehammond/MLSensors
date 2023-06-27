@@ -81,6 +81,10 @@ bool possiblePress() {
         int16_t curYAcc = curState.get(sensorNum).ay;
         int16_t curZAcc = curState.get(sensorNum).az;
         // not just y! You can tilt the device and stuff too!
+        float mag = sqrt(curXAcc * curXAcc + curYAcc * curYAcc + curZAcc * curZAcc);
+
+
+        //TODO: Make this dependent on the magnitude rather than 
         if (curXAcc >= THRESHOLD || curYAcc >= THRESHOLD || curZAcc >= THRESHOLD) {
             return true;
         }

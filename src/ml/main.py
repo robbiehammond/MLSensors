@@ -20,9 +20,11 @@ def predict(model, data):
     df = pd.DataFrame(data=[nnInput], columns=fields)
     t = scaler.transform(df)
     if ONLYPRINT:
-        print(np.argmax(model.predict(t)))
+        guess = model.predict(t)
+        print(np.argmax(guess))
     else:
-        keyboard.press(str(np.argmax(model.predict(t))))
+        guess = model.predict(t)
+        keyboard.press(str(np.argmax(guess)))
 
 
 def main():
@@ -36,3 +38,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+0022100000100350005000255500015244225103013100010000

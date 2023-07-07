@@ -1,5 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS
+static const int BAUD_RATE = 922190;
+
 static const int LHPINKY = 0;
 static const int LHRING = 1;
 static const int LHMIDDLE = 2;
@@ -16,7 +18,7 @@ static const int iGz = 5;
 static const int THRESHOLD = 5500;
 
 const static int SAMPLES_PER_ACTION = 20;
-const static int NUM_SENSORS = 4; //current number plugged in
+const static int NUM_SENSORS = 4; 
 const static int DOC_SIZE = 12000;
 
 const static int SENSOR0PIN = 26;

@@ -95,7 +95,7 @@ bool possiblePress() {
 
 
 void setup() {
-    Serial.begin(922190);
+    Serial.begin(BAUD_RATE);
     pinMode(SENSOR0PIN, OUTPUT);
     pinMode(SENSOR1PIN, OUTPUT);
     pinMode(SENSOR2PIN, OUTPUT);

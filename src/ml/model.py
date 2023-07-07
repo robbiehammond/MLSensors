@@ -28,12 +28,12 @@ def printTestResults(y_test, predictions):
 
 tf.random.set_seed(2)
 
-print(X_train)
 
 encoder = LabelEncoder()
 encoder.fit(y_train)
 encoded_Y = encoder.transform(y_train)
 dummy_y = tf.keras.utils.to_categorical(encoded_Y)
+dummy_y_test = tf.keras.utils.to_categorical(encoder.transform(y_test))
 
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
@@ -56,9 +56,14 @@ model.compile(
     ]
 )
 
-history = model.fit(X_train_scaled, dummy_y, epochs=500)
-predictions = model.predict(X_test_scaled)
+history = model.fit(X_train_scaled, dummy_y, epochs=100, validation_data=(X_test_scaled, dummy_y_test))
+predictions_raw = model.predict(X_test_scaled)
+predictions = []
+for pred in predictions_raw:
+    predictions.append(np.argmax(pred))
 
-printTestResults(y_test, predictions)
+print(y_test)
+print(encoder.inverse_transform(predictions))
+
 
 model.save('src/ml/models/model.h5')

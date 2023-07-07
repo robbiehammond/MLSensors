@@ -14,12 +14,13 @@ from constants import *
 
 def printTestResults(y_test, predictions):
     ar = [d for d in y_test]
+    print(ar)
     right = 0
     print(type(y_test))
     for i in range(len(y_test)):
-        print("Predicted " + keys[(np.argmax(predictions[i]))], end=', ')
+        print("Predicted " + str(CONTROL_SCHEME[(np.argmax(predictions[i]))]), end=', ')
         print("Actually was " + str(ar[i]))
-        if (keys[(np.argmax(predictions[i]))] == str(ar[i])):
+        if (str(CONTROL_SCHEME[(np.argmax(predictions[i]))]) == str(ar[i])):
             right += 1
     print("Test set accuracy: " + str(right / len(predictions)))
 
@@ -27,6 +28,7 @@ def printTestResults(y_test, predictions):
 
 tf.random.set_seed(2)
 
+print(X_train)
 
 encoder = LabelEncoder()
 encoder.fit(y_train)
@@ -39,21 +41,22 @@ X_test_scaled = scaler.transform(X_test)
 
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(NUM_SAMPLES * 6 * NUM_SENSORS, activation='relu'),
-    tf.keras.layers.Dense(1028, activation='relu'),
-    tf.keras.layers.Dense(512, activation='relu'),
-    tf.keras.layers.Dense(256, activation='relu'),
+    tf.keras.layers.Dense(NUM_SAMPLES * 6 * NUM_SENSORS, activation='gelu'),
+    tf.keras.layers.Dense(1024, activation='gelu'),
+    tf.keras.layers.Dense(512, activation='gelu'),
     tf.keras.layers.Dense(NUM_POSSIBILITIES, activation='sigmoid')
 ])
+
+#Optimizers tried that seem somewhat promising: adadelta, 
 model.compile(
     loss='categorical_crossentropy',
-    optimizer='adam',
+    optimizer='adadelta',
     metrics=[
         'accuracy'
     ]
 )
 
-history = model.fit(X_train_scaled, dummy_y, epochs=300)
+history = model.fit(X_train_scaled, dummy_y, epochs=500)
 predictions = model.predict(X_test_scaled)
 
 printTestResults(y_test, predictions)

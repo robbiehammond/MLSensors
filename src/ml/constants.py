@@ -2,11 +2,12 @@ import pandas as pd
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import train_test_split
 import re
+import controlschemes
 
-keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/']
 
+CONTROL_SCHEME = controlschemes.minecraft
 DEVICE_LOCATION = '/dev/tty.usbserial-02896C6F'
-NUM_POSSIBILITIES = len(keys)
+NUM_POSSIBILITIES = len(CONTROL_SCHEME) - 1
 BAUD_RATE = -1
 NUM_SENSORS = -1
 NUM_SAMPLES = -1

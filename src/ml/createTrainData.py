@@ -7,8 +7,8 @@ warnings.simplefilter('always', UserWarning)
 def getTrainingDataLineByLine(ser):
     strokes_made = 0
     while (True):
-        key = keys[random.randint(0, len(keys) - 1)]
-        print("Do the action corresponding to this character: " + key)
+        key = CONTROL_SCHEME[random.randint(0, len(CONTROL_SCHEME) - 2)] # - 2 so PressAndHold isn't considered.
+        print("Do the action corresponding to this character: " + str(key))
         line = ser.readline()
         try:
             data = json.loads(line)

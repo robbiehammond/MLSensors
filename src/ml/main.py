@@ -19,7 +19,7 @@ def predict(model, data):
     df = pd.DataFrame(data=[nnInput], columns=fields)
     t = scaler.transform(df)
     guess = model.predict(t)
-    keyToPress = keys[np.argmax(guess)]
+    keyToPress = CONTROL_SCHEME[np.argmax(guess)]
     if ONLYPRINT:
         print(keyToPress)
     else:

@@ -1,13 +1,13 @@
-import json, serial, csv, random, os, warnings
+import json, serial, csv, random, os, warnings, random
 from termcolor import colored
 from constants import * 
 warnings.simplefilter('always', UserWarning)
 
 
-def getTrainingDataLineByLine(ser, text):
+def getTrainingDataLineByLine(ser):
     strokes_made = 0
-    while (strokes_made < len(text)):
-        key = text[strokes_made]
+    while (True):
+        key = keys[random.randint(0, len(keys) - 1)]
         print("Do the action corresponding to this character: " + key)
         line = ser.readline()
         try:
@@ -82,15 +82,7 @@ def main():
         write_columns_to_csv() 
     ser = serial.Serial(DEVICE_LOCATION)
     ser.baudrate = BAUD_RATE
-    text = []
-    with open('src/ml/train_data/train_inputs_no_keys.txt', 'r') as file:
-        while True:
-            c = file.read(1)
-            if not c:
-                break
-            if c != '\n':
-                text.append(c)
-    getTrainingDataLineByLine(ser, text)
+    getTrainingDataLineByLine(ser)
 
 
 if __name__ == '__main__':

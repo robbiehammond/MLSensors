@@ -17,9 +17,9 @@ def printTestResults(y_test, predictions):
     right = 0
     print(type(y_test))
     for i in range(len(y_test)):
-        print("Predicted " + str(np.argmax(predictions[i]) + 1), end=', ')
+        print("Predicted " + keys[(np.argmax(predictions[i]))], end=', ')
         print("Actually was " + str(ar[i]))
-        if (str(np.argmax(predictions[i]) + 1) == str(ar[i])):
+        if (keys[(np.argmax(predictions[i]))] == str(ar[i])):
             right += 1
     print("Test set accuracy: " + str(right / len(predictions)))
 
@@ -39,8 +39,9 @@ X_test_scaled = scaler.transform(X_test)
 
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(256, activation='relu'),
+    tf.keras.layers.Dense(NUM_SAMPLES * 6 * NUM_SENSORS, activation='relu'),
+    tf.keras.layers.Dense(1028, activation='relu'),
+    tf.keras.layers.Dense(512, activation='relu'),
     tf.keras.layers.Dense(256, activation='relu'),
     tf.keras.layers.Dense(NUM_POSSIBILITIES, activation='sigmoid')
 ])
@@ -52,7 +53,7 @@ model.compile(
     ]
 )
 
-history = model.fit(X_train_scaled, dummy_y, epochs=100)
+history = model.fit(X_train_scaled, dummy_y, epochs=300)
 predictions = model.predict(X_test_scaled)
 
 printTestResults(y_test, predictions)

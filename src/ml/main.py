@@ -6,7 +6,6 @@ from pynput.keyboard import Key, Controller
 
 keyboard = Controller()
 
-
 def predict(model, data):
     nnInput = []
     for sampleNum in range(NUM_SAMPLES):
@@ -19,23 +18,32 @@ def predict(model, data):
             nnInput.append(data['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz'])
     df = pd.DataFrame(data=[nnInput], columns=fields)
     t = scaler.transform(df)
+    guess = model.predict(t)
+    keyToPress = keys[np.argmax(guess)]
     if ONLYPRINT:
-        guess = model.predict(t)
-        print(np.argmax(guess))
+        print(keyToPress)
     else:
-        guess = model.predict(t)
-        keyboard.press(str(np.argmax(guess)))
+        keyboard.press(keyToPress)
 
 
 def main():
     model = load_model('src/ml/models/model.h5')
     ser = serial.Serial(DEVICE_LOCATION)
     ser.baudrate = BAUD_RATE
+    print("Ready to recieve input.")
     while (True):
         line = ser.readline()
-        data = json.loads(line)
-        predict(model, data)
+        try:
+            data = json.loads(line)
+            predict(model, data)
+        except json.JSONDecodeError:
+            ser.close()
+            _ = input("Hardware is throwing errors. Press any key when ready to continue")
+            ser.open()
+        except UnicodeDecodeError:
+            ser.close()
+            _ = input("Hardware reset detected. Press any key when ready to continue")
+            ser.open()
 
 if __name__ == '__main__':
     main()
-0022100000100350005000255500015244225103013100010000

@@ -1,10 +1,13 @@
 from keras.models import load_model
 import serial, json
 import numpy as np
+from sklearn.calibration import LabelEncoder
 from constants import * 
 from pynput.keyboard import Key, Controller
 
 keyboard = Controller()
+encoder = LabelEncoder()
+encoder.fit(y_train)
 
 def predict(model, data):
     nnInput = []
@@ -18,12 +21,18 @@ def predict(model, data):
             nnInput.append(data['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz'])
     df = pd.DataFrame(data=[nnInput], columns=fields)
     t = scaler.transform(df)
+
     guess = model.predict(t)
-    keyToPress = CONTROL_SCHEME[np.argmax(guess)]
+    keyToPress = encoder.inverse_transform([np.argmax(guess)])[0]
     if ONLYPRINT:
         print(keyToPress)
     else:
-        keyboard.press(keyToPress)
+        if keyToPress == 'Key.space':
+            keyboard.press(Key.space)
+        elif keyToPress == 'Key.shift':
+            keyboard.press(Key.shift)
+        else:
+            keyboard.press(keyToPress)
 
 
 def main():

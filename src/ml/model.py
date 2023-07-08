@@ -56,7 +56,7 @@ model.compile(
     ]
 )
 
-history = model.fit(X_train_scaled, dummy_y, epochs=100, validation_data=(X_test_scaled, dummy_y_test))
+history = model.fit(X_train_scaled, dummy_y, epochs=300, validation_data=(X_test_scaled, dummy_y_test))
 predictions_raw = model.predict(X_test_scaled)
 predictions = []
 for pred in predictions_raw:

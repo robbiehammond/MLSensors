@@ -57,6 +57,7 @@ void updateSensorData() {
         sensor.getMotion6(&rawVals[iAx], &rawVals[iAy], &rawVals[iAz], 
                           &rawVals[iGx], &rawVals[iGy], &rawVals[iGz]);
 
+
         //store those values in curState for that sensor.
         curState.set(sensorNum, rawVals);
     };
@@ -116,6 +117,12 @@ void setup() {
     pinMode(SENSOR1PIN, OUTPUT);
     pinMode(SENSOR2PIN, OUTPUT);
     pinMode(SENSOR3PIN, OUTPUT);
+
+    //All disiabled initially.
+    digitalWrite(SENSOR0PIN, HIGH);
+    digitalWrite(SENSOR1PIN, HIGH);
+    digitalWrite(SENSOR2PIN, HIGH);
+    digitalWrite(SENSOR3PIN, HIGH);
     Wire.begin();
 
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {

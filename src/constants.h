@@ -19,7 +19,7 @@ static const int THRESHOLD = 5500;
 
 const static int SAMPLES_PER_ACTION = 20;
 const static int NUM_SENSORS = 4; 
-const static int DOC_SIZE = 12000;
+const static int DOC_SIZE = 14000;
 
 const static bool SHOULD_PERIODICALLY_REINIT = false; //if somethin comes loose and read is bad, we may need to reinit.
 const static int REINIT_TIME = 1000; //reinit after 1 second (1000 ms)

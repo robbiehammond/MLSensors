@@ -5,9 +5,9 @@ import re
 import controlschemes
 
 
-CONTROL_SCHEME = controlschemes.minecraft
+CONTROL_SCHEME = controlschemes.numpad
 DEVICE_LOCATION = '/dev/tty.usbserial-02896C6F'
-NUM_POSSIBILITIES = len(CONTROL_SCHEME) - 1
+NUM_POSSIBILITIES = len(CONTROL_SCHEME)
 BAUD_RATE = -1
 NUM_SENSORS = -1
 NUM_SAMPLES = -1

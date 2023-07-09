@@ -14,8 +14,8 @@ def getTrainingDataLineByLine(ser):
             data = json.loads(line)
             data['key'] = key
             write_entry_to_csv(data)
-            print('Actions Performed: ' + str(strokes_made))
             strokes_made += 1
+            print('Actions Performed: ' + str(strokes_made))
         except json.JSONDecodeError:
             ser.close()
             _ = input("Hardware is throwing errors. Press any key when ready to continue")
@@ -31,6 +31,7 @@ def write_entry_to_csv(obj):
         writer = csv.writer(csvfile)
         rowToWrite = []
         goodData = True
+        badSensor = 0
         for sampleNum in range(NUM_SAMPLES):
             for sensorNum in range(NUM_SENSORS):
                 ax = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['ax']
@@ -42,6 +43,7 @@ def write_entry_to_csv(obj):
                 #if the sensor is likely not reading, give a warning
                 if ax == 0 and ay == 0 and az == 0 and gx == 0 and gy == 0 and gz == 0:
                     goodData = False
+                    badSensor = sensorNum
                 else:
                     rowToWrite.append(ax)
                     rowToWrite.append(ay)
@@ -55,7 +57,7 @@ def write_entry_to_csv(obj):
             rowToWrite.append(obj['key'])
             writer.writerow(rowToWrite)
         else:
-            warnings.warn(colored(f'Sensor {sensorNum} likely isn\'t responding. Data won\'t be recorded', 'red'))
+            warnings.warn(colored(f'Sensor {badSensor} likely isn\'t responding. Data won\'t be recorded', 'red'))
 
 
 def write_columns_to_csv():

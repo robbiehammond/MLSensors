@@ -9,6 +9,7 @@ std::array<SensorState, SAMPLES_PER_ACTION> capturedStates; //After button press
 Action curAction; //When a button press happens, it's stored here.
 int sampleInd = 0; //loops through capturedSamples updating them every loop
 bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 
+long int lastInit = millis();
 
 //Sensor reads will come from the input sensor number.
 //HIGH = address is now 0x69, low means it's 0x68.
@@ -93,6 +94,21 @@ bool possiblePress() {
     return false;
 }
 
+void reinit() {
+    if (millis() - lastInit >= REINIT_TIME) {
+        for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
+            changeSensor(sensorNum);
+            sensor.initialize();
+            bool connected = sensor.testConnection();
+            if (connected)
+                sensor.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);
+            else
+                Serial.println("Not connected, even on reinit call");
+        }
+        lastInit = millis();
+    }
+}
+
 
 void setup() {
     Serial.begin(BAUD_RATE);
@@ -120,6 +136,8 @@ it takes about 50-52 ms.
 */
 void loop() {
     if (!enoughSamplesCollected && sampleInd == (SAMPLES_PER_ACTION - 1)) enoughSamplesCollected = true;
+    long int t = millis();
+
 
     updateSensorData();
 
@@ -131,5 +149,9 @@ void loop() {
         curAction.setStates(capturedStates);
         curAction.writeOut(WriteOption::SERIAL_OUT);
     }
+    if (SHOULD_PERIODICALLY_REINIT) {
+        reinit();
+    }
     sampleInd = (sampleInd + 1) % SAMPLES_PER_ACTION;
+    //Serial.println(millis() - t);
 }

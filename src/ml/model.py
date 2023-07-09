@@ -62,8 +62,12 @@ predictions = []
 for pred in predictions_raw:
     predictions.append(np.argmax(pred))
 
-print(y_test)
-print(encoder.inverse_transform(predictions))
+filename = input("Training Finished. Enter a name for the .h5 file (not including the .h5 extension). If left blank, the name will be \'model\'.")
 
+if filename == "":
+    model.save('src/ml/models/model.h5')
+else:
+    model.save(f'src/ml/models/{filename}.h5')
 
-model.save('src/ml/models/model.h5')
+print("Saved.")
+    

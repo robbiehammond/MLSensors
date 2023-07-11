@@ -22,7 +22,7 @@ with open("src/constants.h") as constantsH:
         elif "static const int BAUD_RATE" in line:
             BAUD_RATE = int(line.split()[-1][:-1])
 
-ONLYPRINT = False 
+ONLYPRINT = False
 
 # if actual training data exists
 if sum(1 for _ in open('src/ml/csvs/mpu6050data.csv')) > 1:

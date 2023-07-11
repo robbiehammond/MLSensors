@@ -30,11 +30,13 @@ def predict(model, data):
         key = None
         if keyToPress == 'Key.space':
             key = Key.space
+            keyboard.press(key)
         elif keyToPress == 'Key.shift':
             key = Key.shift
+            keyboard.press(key)
         else:
             key = keyToPress
-        keyboard.press(key)
+            keyboard.press(str(key))
 
 def main():
     model = load_model('src/ml/models/model.h5')

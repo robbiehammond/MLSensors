@@ -34,12 +34,20 @@ def predict(model, data):
         elif keyToPress == 'Key.shift':
             key = Key.shift
             keyboard.press(key)
+        elif keyToPress == 'Key.page_up':
+            key = Key.page_up
+            keyboard.press(key)
+            keyboard.release(key)
+        elif keyToPress == 'Key.page_down':
+            key = Key.page_down
+            keyboard.press(key)
+            keyboard.release(key)
         else:
             key = keyToPress
             keyboard.press(str(key))
 
 def main():
-    model = load_model('src/ml/models/model.h5')
+    model = load_model(MODEL_PATH)
     ser = serial.Serial(DEVICE_LOCATION)
     ser.baudrate = BAUD_RATE
     print("Ready to recieve input.")

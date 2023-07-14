@@ -1,16 +1,17 @@
 import pandas as pd
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import train_test_split
-import re
 import controlschemes
 
 
-CONTROL_SCHEME = controlschemes.numpad
+CONTROL_SCHEME = controlschemes.page
 DEVICE_LOCATION = '/dev/tty.usbserial-02896C6F'
+MODEL_PATH = 'src/ml/models/model.h5'
 NUM_POSSIBILITIES = len(CONTROL_SCHEME)
 BAUD_RATE = -1
 NUM_SENSORS = -1
 NUM_SAMPLES = -1
+NUM_EPOCHS = 100
 
 #Find what they have been initialized to in constants.h. Don't want to have to change them in 2 places.
 with open("src/constants.h") as constantsH:
@@ -22,7 +23,7 @@ with open("src/constants.h") as constantsH:
         elif "static const int BAUD_RATE" in line:
             BAUD_RATE = int(line.split()[-1][:-1])
 
-ONLYPRINT = False
+ONLYPRINT = False 
 
 # if actual training data exists
 if sum(1 for _ in open('src/ml/csvs/mpu6050data.csv')) > 1:

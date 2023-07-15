@@ -36,17 +36,3 @@ if sum(1 for _ in open('src/ml/csvs/mpu6050data.csv')) > 1:
         test_size=0.2, random_state=2
     )
     scaler.fit_transform(X_test)
-
-
-
-
-fields = []
-# append sample0s0ax, sample0s0ay, ... sampleNsMgz
-for sampleNum in range(NUM_SAMPLES):
-    for sensorNum in range(NUM_SENSORS):
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'ax\'')
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'ay\'')
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'az\'')
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'gx\'')
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'gy\'')
-        fields.append('\'sample' + str(sampleNum) + 's' + str(sensorNum) + 'gz\'')

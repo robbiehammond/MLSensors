@@ -40,7 +40,7 @@ def write_entry_to_csv(obj):
                 gx = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gx']
                 gy = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gy']
                 gz = obj['sample' + str(sampleNum)]['s' + str(sensorNum)]['gz']
-                #if the sensor is likely not reading, give a warning
+                #if the sensor is likely not reading, give a warning and don't record.
                 if ax == 0 and ay == 0 and az == 0 and gx == 0 and gy == 0 and gz == 0:
                     goodData = False
                     badSensor = sensorNum

@@ -10,7 +10,6 @@ class Action {
 public:
     Action();
     void setStates(std::array<SensorState, SAMPLES_PER_ACTION>& capturedSamples);
-    bool likelyContainsButtonPress();
     void writeOut(WriteOption w);
 
 private:

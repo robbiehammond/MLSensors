@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 
 struct SingleSensorData {
-    int sensorNum;
+    int sensorNum; //Could this be smaller than a regular int? Definitely. 
     int16_t ax;
     int16_t ay;
     int16_t az;

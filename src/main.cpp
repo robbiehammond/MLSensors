@@ -2,10 +2,10 @@
 #include <queue>
 #include "Action.h"
 
-MPU6050 sensor; //The sensor that is currently being looked at
+MPU6050 sensor; //The sensor that is currently being examined 
 int16_t rawVals[6]; //Where raw data is read to
-SensorState curState; //Written to over and over again for a copy to get pushed into samples.
-std::array<SensorState, SAMPLES_PER_ACTION> capturedStates; //After button press, these are the previous (and current) states that get sent over.
+SensorState curSample; //Written to over and over again for a copy to get pushed into samples.
+std::array<SensorState, SAMPLES_PER_ACTION> capturedSamples; //After button press, these are the previous (and current) samples that get sent over.
 Action curAction; //When a button press happens, it's stored here.
 int sampleInd = 0; //loops through capturedSamples updating them every loop
 bool enoughSamplesCollected = false; //turns true when we have 10 samples collected 
@@ -59,15 +59,15 @@ void updateSensorData() {
 
 
         //store those values in curState for that sensor.
-        curState.set(sensorNum, rawVals);
+        curSample.set(sensorNum, rawVals);
     };
 }
 
 //Give it it's timestamp of when it was taken, and put it into the capturedSamples list.
 void recordSensorData() {
-    curState.markAsCompleted();
-    capturedStates[sampleInd] = curState;
-    curState.resetState();
+    curSample.markAsCompleted();
+    capturedSamples[sampleInd] = curSample;
+    curSample.resetState();
 }
 
 
@@ -79,14 +79,14 @@ Probably could just be done immediately in updateSensorData() so we don't need t
 */
 bool possiblePress() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
-        int16_t curXAcc = curState.get(sensorNum).ax;
-        int16_t curYAcc = curState.get(sensorNum).ay;
-        int16_t curZAcc = curState.get(sensorNum).az;
+        int16_t curXAcc = curSample.get(sensorNum).ax;
+        int16_t curYAcc = curSample.get(sensorNum).ay;
+        int16_t curZAcc = curSample.get(sensorNum).az;
         // not just y! You can tilt the device and stuff too!
         float mag = sqrt(curXAcc * curXAcc + curYAcc * curYAcc + curZAcc * curZAcc);
 
 
-        //TODO: Make this dependent on the magnitude rather than 
+        //Something probably worth doing: make this an expression based on magnitude instead of just x, y, and z. This works good enuf though.
         if (curXAcc >= THRESHOLD || curYAcc >= THRESHOLD || curZAcc >= THRESHOLD) {
             return true;
         }
@@ -128,7 +128,7 @@ void setup() {
     for (int sensorNum = 0; sensorNum < NUM_SENSORS; sensorNum++) {
         changeSensor(sensorNum);
         sensor.initialize();
-        Serial.println(sensor.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
+        Serial.println(sensor.testConnection() ? F("MPU6050 connected.") : F("MPU6050 connection failed."));
         sensor.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);
     }
 
@@ -143,7 +143,7 @@ it takes about 50-52 ms.
 */
 void loop() {
     if (!enoughSamplesCollected && sampleInd == (SAMPLES_PER_ACTION - 1)) enoughSamplesCollected = true;
-    long int t = millis();
+    //long int t = millis();
 
 
     updateSensorData();
@@ -153,7 +153,7 @@ void loop() {
     //if we're actively sending messages, collected enough samples, and a press is detected
     if (enoughSamplesCollected && possiblePress()) {
 
-        curAction.setStates(capturedStates);
+        curAction.setStates(capturedSamples);
         curAction.writeOut(WriteOption::SERIAL_OUT);
     }
     if (SHOULD_PERIODICALLY_REINIT) {
